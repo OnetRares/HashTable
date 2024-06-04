@@ -1,0 +1,184 @@
+#include <iostream>
+#include <vector>
+#include <list>
+#include <functional>
+
+template<typename Key, typename Value, typename HashFunc = std::hash<Key>>
+class HashTable {
+private:
+    const double kResizeFactor = 7.0 / 4;
+    typedef std::pair<Key, Value> Pair;
+
+    std::vector<std::list<Pair>> m_table;
+    int m_size;
+    int m_numElements;
+    double m_loadFactor = 1.0;
+
+    void rehash() {
+        int newSize = 2 * m_size;
+        std::vector<std::list<Pair>> newTable(newSize);
+        for (const auto& bucket : m_table) {
+            for (const auto& pair : bucket) {
+                int newIndex = HashFunc()(pair.first) % newSize;
+                newTable[newIndex].push_back(pair);
+            }
+        }
+        m_table = std::move(newTable);
+        m_size = newSize;
+        m_loadFactor = (double)m_numElements / m_size;
+    }
+
+public:
+    HashTable(int size = 10) : m_table(size), m_numElements(0), m_size(size), m_loadFactor(0) {}
+
+    void insert(const Key& key, const Value& value) {
+        if (m_loadFactor > kResizeFactor)
+            rehash();
+
+        int index = HashFunc()(key) % m_size;
+        auto& bucket = m_table[index];
+
+        for (auto it = bucket.begin(); it != bucket.end(); ++it) {
+            if (it->first == key) {
+                it->second = value;
+                return;
+            }
+        }
+
+        bucket.push_back(std::make_pair(key, value));
+        m_numElements++;
+        m_loadFactor = (double)m_numElements / m_size;
+    }
+
+    void displayBucketSizes() const {
+        std::cout << "Bucket sizes:" << std::endl;
+        for (int i = 0; i < m_table.size(); ++i) {
+            std::cout << "Bucket " << i << " size: " << m_table[i].size() << std::endl;
+        }
+    }
+
+
+    bool find(const Key& key)
+    {
+        int index = HashFunc()(key) % m_size; 
+        auto& bucket = m_table[index];
+        for (auto it = bucket.begin(); it != bucket.end(); it++)
+        {
+            if (it->first == key)
+                return true;
+        }
+        return false;
+    }
+
+
+    Value& operator[](const Key& key) {
+        int index = HashFunc()(key) % m_size;
+        auto& bucket = m_table[index];
+
+        for (auto& pair : bucket) {
+            if (pair.first == key) {
+                return pair.second;
+            }
+        }
+
+        bucket.push_back(std::make_pair(key, Value{}));
+        m_numElements++;
+        m_loadFactor = (double)m_numElements / m_size;
+        return bucket.back().second;
+    }
+
+    void erase(const Key& key) {
+        int index = HashFunc()(key) % m_size;
+        auto& bucket = m_table[index];
+
+        for (auto it = bucket.begin(); it != bucket.end(); ++it) {
+            if (it->first == key) {
+                bucket.erase(it);
+                m_numElements--;
+                m_loadFactor = (double)m_numElements / m_size;
+                return;
+            }
+        }
+    }
+
+    void iterate() const {
+        std::cout << "Content of the hash table:" << std::endl;
+        for (int i = 0; i < m_table.size(); ++i) {
+            std::cout << "Bucket " << i << ": ";
+            for (const auto& pair : m_table[i]) {
+                std::cout << "(" << pair.first << ", " << pair.second << ") ";
+            }
+            std::cout << std::endl;
+        }
+    }
+};
+
+void displayMenu()
+{
+    std::cout << "===Meniu===" << std::endl;
+    std::cout << "1. Insert" << std::endl;
+    std::cout << "2. Erase" << std::endl;
+    std::cout << "3. Find element" << std::endl;
+    std::cout << "4. SizeOfBuchet" << std::endl;
+    std::cout << "5. Display" << std::endl;
+    std::cout << "6. Exit" << std::endl;
+}
+int main() {
+    HashTable<int, int> ht(8);
+
+    int choice,key,value;
+   while (true)
+   {
+       displayMenu();
+       
+        std::cin >> choice;
+
+        switch (choice) {
+        case 1: {
+
+            std::cout << "Enter key and value: ";
+            std::cin >> key >> value;
+            ht.insert(key, value);
+            std::cout << "Inserted element." << std::endl;
+            break;
+        }
+        case 2: {
+
+            std::cout << "Enter key to erase: ";
+            std::cin >> key;
+            ht.erase(key);
+            std::cout << "Deleted element." << std::endl;
+            break;
+        }
+        case 3: {
+
+            std::cout << "Enter key to find: ";
+            std::cin >> key;
+            if (ht.find(key))
+                std::cout << "Element with key " << key << " was finded." << std::endl;
+            else
+                std::cout << "Element with key " << key << " can't finded." << std::endl;
+            break;
+        }
+        case 4: {
+            ht.displayBucketSizes();
+            break;
+        }
+        case 5: {
+            ht.iterate();
+            break;
+        }
+        case 6: {
+            std::cout << "Exit" << std::endl;
+            return 0;
+        }
+        default: {
+            std::cout << "Invalid option" << std::endl;
+            break;
+        }
+        }
+    } 
+
+    return 0;
+}
+
