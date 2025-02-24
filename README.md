@@ -21,7 +21,9 @@ It also includes a menu-driven console application that allows users to interact
 # 📂 Project Structure
 
 📦 HashTable-Implementation
+
 ├── 📜 main.cpp          # Main program with menu-driven user interface
+
 ├── 📜 README.md         # Project documentation (this file)
 
 # 🛠️ Technologies Used
