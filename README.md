@@ -39,3 +39,11 @@ It also includes a menu-driven console application that allows users to interact
 4. SizeOfBucket
 5. Display
 6. Exit
+
+# ⚠️ Error Handling
+
+Ensures **rehashing** when the load factor exceeds the threshold.
+
+**Avoids duplicate key insertion** by updating existing values.
+
+**Handles missing keys** gracefully in find and erase operations.
