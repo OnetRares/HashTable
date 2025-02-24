@@ -27,11 +27,11 @@ It also includes a menu-driven console application that allows users to interact
 ├── 📜 README.md         # Project documentation (this file)
 
 # 🛠️ Technologies Used
-C++ Standard Library (STL): For vectors and lists.
+**C++ Standard Library (STL)**: For vectors and lists.
 
-Templates: Allow generic key-value storage.
+**Templates**: Allow generic key-value storage.
 
-Exception Handling: Ensures robust error handling.
+**Exception Handling**: Ensures robust error handling.
 # 3️⃣ Use the menu to interact with the hash table
 1. Insert
 2. Erase
