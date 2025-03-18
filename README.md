@@ -2,7 +2,7 @@
 
 # 📌 Overview
 
-his project implements a hash table in C++ with separate chaining for collision resolution. The hash table supports dynamic resizing, insertion, deletion, lookup, and iteration through stored key-value pairs.
+This project implements a hash table in C++ with separate chaining for collision resolution. The hash table supports dynamic resizing, insertion, deletion, lookup, and iteration through stored key-value pairs.
 
 It also includes a menu-driven console application that allows users to interact with the hash table using standard input.
 
